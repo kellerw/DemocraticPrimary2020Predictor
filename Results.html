@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<body>
+	<script src='http://d3js.org/d3.v3.min.js'></script>
+	<script>
+		var months = ['Null', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+		var height = 500;
+		var width = 1000;
+		var candidates = ["biden", "booker","harris","klobuchar","orourke","sanders","warren","other"];
+		var svg = d3.select('body').append('svg')
+			.attr('height', height)
+			.attr('width', width);
+		var projection = d3.geo.albersUsa()
+			.translate([width/2, height/2])
+			.scale([1000]);
+		var path = d3.geo.path()
+		  	 .projection(projection);
+		var locked = 0;
+		d3.csv("statedata.csv", function(statedata) {
+		d3.csv("output.csv", function(outputdata) {
+		d3.json("state.geo.json", function(json) {
+		d3.csv("candidates.csv", function(candidatedata) {
+			for (var j = 0; j < json.features.length; j++)  {
+				var jsonState = json.features[j].properties.NAME10;
+				for(var i = 0; i < statedata.length; i++) {
+					if (statedata[i].name == jsonState) {
+						json.features[j].properties.statedata = statedata[i];
+						break;
+					}
+				}
+				for(var i = 0; i < outputdata.length; i++) {
+					if (outputdata[i].state == jsonState) {
+						json.features[j].properties.outputdata = outputdata[i];
+						break;
+					}
+				}
+			}
+			var colors = [];
+			for(var i = 0; i < candidatedata.length; i++)
+				colors.push(candidatedata[i].color);
+			function findColor(index){
+					return colors[index];
+				}
+			svg.selectAll("path")
+				.data(json.features)
+				.enter()
+				.append("path")
+				.attr("d", path)
+				.style("stroke", "#fff")
+				.style("stroke-width", "1")
+				.on("mouseover", function(d){
+					if(locked == 0)
+						ShowStateInfo(d);
+				})
+				.on("click", function(d){
+					if(locked == 0)
+						locked = d;
+					else
+						locked = 0;
+					ShowStateInfo(d);
+				})
+				.style("fill", function(d) {
+					data2 = d.properties.outputdata;
+					data = [];
+					for(i = 0; i < candidates.length; i++)
+						data.push(data2[candidates[i]]);
+					for(i = 0; i < data.length; i++)
+					{
+						if(data[i] > 50)
+							return  colors[i];
+					}
+					return "rgb(213,222,217)";
+				});
+		svg.append("rect").attr('width', 50).attr('height', height).style('fill','darkgreen').on("mouseover", function(){reset();}).on("click", function(){reset();});
+		var h1 = d3.select('body').append('h1').text('Nationwide');
+		var h2 = d3.select('body').append('h2').text('Nationwide');
+		var width2 = 500,
+			height2 = 500;
+		var outerRadius = height2 / 2 - 20,
+			cornerRadius = 10;
+		var pie = d3.layout.pie();
+		var arc = d3.svg.arc()
+			.padRadius(outerRadius);
+		var svg2 = d3.select("body").append("svg")
+			.attr("width", width2+500)
+			.attr("height", height2)
+			.append("g")
+			.attr("transform", "translate(" + width2 / 2 + "," + height2 / 2 + ")");
+		svg2.selectAll('rect')
+			.data(candidatedata)
+			.enter()
+			.append('rect')
+			.attr('width', 20)
+			.attr('height', 20)
+			.attr('x', width2-200)
+			.attr('y', function(d, i) { return i * 30; })
+			.attr('fill', function(d) { return d.color;});
+		function reset()
+		{
+			h1.text('Nationwide');
+			h2.text('Nationwide');
+			setPie(outputdata[outputdata.length-1]);
+		}
+		function setPie(data2)
+		{
+			console.log(outerRadius);
+			data = [];
+			for(i = 0; i < candidates.length; i++)
+				data.push(data2[candidates[i]]);
+			//var svg2 = d3.selectAll("svg").filter(function(d, i) { return i == 1});
+			svg2.selectAll("path")
+				.remove();
+			svg2.selectAll('text')
+				.remove();
+			svg2.selectAll('text')
+				.data(candidatedata)
+				.enter()
+				.append('text')
+				.attr('width', 300)
+				.attr('height', 20)
+				.attr('x', width2-175)
+				.attr('y', function(d, i) { return 15 + i * 30; })
+				.text(function(d,i) { return d.candidate + ": " + data[i]+'%';});
+			svg2.append('text')
+				.attr('width', 300)
+				.attr('height', 20)
+				.attr('x', width2-200)
+				.attr('y', function(d, i) { return -15 + i * 30; })
+				.text('Odds of winning');
+			if(data2[candidates[0]+"delegates"] != "")
+			
+			txts = []
+			for(var k = 0; k < 4; k++)
+			{
+				txts.push(svg2.append("text")
+					.attr('width', 300)
+					.attr('height', 20)
+					.attr('x', width2-200)
+					.attr('y', -150 + k * 25)
+					.text("")
+				);
+			}
+			svg2.selectAll("path")
+				.data(pie(data))
+				.enter().append("path")
+				.each(function(d) { d.outerRadius = outerRadius - 20; })
+				.attr("d", arc)
+				.attr("fill",function(d, i){return findColor(i)})
+				.on("mouseover", function(d, i){ 
+					if(data2[candidates[i]+'madeit'] != undefined)
+					{
+						txts[0].text(candidatedata[i].candidate);
+						txts[1].text('Odds of making it to '+data2.state+': '+data2[candidates[i]+'madeit']+"%");
+						txts[2].text('Average delegates: '+data2[candidates[i]+'delegates']);
+						txts[3].text('Average percentage of vote: '+data2[candidates[i]+'percent'] + "%");
+					}
+					arcTween(outerRadius + 20, 0, this)();})
+				.on("mouseout", function(){ for(var k = 0; k < txts.lenght; k++) txts[k].text('');arcTween(outerRadius - 20, 150, this)();});
+		}
+		setPie(outputdata[outputdata.length-1]);
+		function arcTween(outerRadius, delay, that) {
+			return function() {
+				var el = (that !== undefined ? that : this);
+				d3.select(el).transition().delay(delay).attrTween("d", function(d) {
+				var i = d3.interpolate(d.outerRadius, outerRadius);
+				return function(t) { d.outerRadius = i(t); return arc(d); };
+				});
+			};
+		}
+		function ShowStateInfo(data)
+		{
+			setPie(data.properties.outputdata);
+			h1.text(data.properties.NAME10 + ' ' + data.properties.statedata.primary);
+			h2.text(data.properties.statedata.open + ' ' + data.properties.statedata.primary + ': ' + data.properties.statedata.delegates + ' delegates chosen on ' + months[Math.floor(data.properties.statedata.date / 100)] + ' ' + (data.properties.statedata.date % 100));
+		}
+		});});});});
+	</script>
+</body>
+</html> 

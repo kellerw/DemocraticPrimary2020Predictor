@@ -1,0 +1,58 @@
+name,date,delegates,primary,open
+Iowa,203,43,Caucus,Closed
+New Hampshire,211,24,Primary,Semi-Open
+Nevada,222,35,Caucus,Closed
+South Carolina,229,53,Primary,Open
+Alabama,303,52,Primary,Open
+California,303,416,Primary,Semi-Open
+Massachusetts,303,92,Primary,Semi-Open
+North Carolina,303,110,Primary,Semi-Open
+Oklahoma,303,37,Primary,Semi-Open
+Tennessee,303,64,Primary,Open
+Texas,303,223,Primary,Closed
+Vermont,303,16,Primary,Open
+Virginia,303,99,Primary,Open
+American Samoa,303,6,Caucus,Open
+Colorado,303,67,Caucus,Closed
+Georgia,303,104,Primary,Open
+Minnesota,303,75,Caucus,Open
+Louisiana,307,51,Primary,Closed
+Kansas,307,33,Caucus,Closed
+Maine,308,24,Caucus,Closed
+Idaho,310,20,Primary,Closed
+Michigan,310,127,Primary,Open
+Mississippi,310,36,Primary,Open
+Missouri,310,69,Primary,Open
+Ohio,310,138,Primary,Semi-Open
+Democrats Abroad,310,13,Caucus,Open
+Northern Marianas,314,6,Caucus,Closed
+Arizona,317,66,Primary,Closed
+Florida,317,216,Primary,Closed
+Illinois,317,156,Primary,Open
+Utah,324,28,Caucus,Open
+Washington,326,87,Caucus,Semi-Open
+Alaska,328,14,Caucus,Closed
+Hawaii,328,22,Caucus,Closed
+Wisconsin,407,77,Primary,Open
+Wyoming,411,13,Caucus,Closed
+New York,421,227,Primary,Closed
+Connecticut,428,49,Primary,Closed
+Delaware,428,17,Primary,Closed
+Maryland,428,79,Primary,Closed
+Pennsylvania,428,154,Primary,Closed
+Rhode Island,428,21,Primary,Semi-Open
+Guam,502,6,Caucus,Closed
+Indiana,505,70,Primary,Open
+West Virginia,512,24,Primary,Semi-Open
+Nebraska,512,25,Primary,Open
+Arkansas,519,31,Primary,Open
+Kentucky,519,46,Primary,Closed
+Oregon,519,52,Primary,Closed
+Montana,602,16,Primary,Open
+New Jersey,602,108,Primary,Semi-Open
+New Mexico,602,29,Primary,Closed
+South Dakota,602,14,Primary,Semi-Open
+North Dakota,602,14,Caucus,Open
+Virgin Islands,606,6,Caucus,Closed
+Puerto Rico,607,51,Primary,Open
+Washington D.C.,616,17,Primary,0) 
